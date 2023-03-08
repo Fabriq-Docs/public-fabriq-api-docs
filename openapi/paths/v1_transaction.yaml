@@ -1,0 +1,56 @@
+post:
+  operationId: postTransactions
+  summary: Send Fabriq Transactions
+  description: Send transactions to Fabriq to progress customer offers.
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: '../components/schemas/Transactions.yaml'
+        examples:
+          transaction:
+            summary: Transaction Example
+            value:
+              - customer_id: 8b896428-ac34-4911-98af-3d2e6266f60e
+                transaction_id: b48c8bbc-bcb8-11eb-8529-0242ac130003
+                transaction_local_datetime: '2021-01-01T00:01:01'
+                transaction_utc_datetime: '2021-01-01T07:01:01Z'
+                transaction_total_spend: 12477
+                line_items:
+                  - item_sku: '94040'
+                    item_price: 99
+                    item_quantity: 0.98
+                    item_spend: 9702
+                  - item_sku: '94467'
+                    item_price: 299
+                    item_quantity: 3.56
+                    item_spend: 800
+                  - item_sku: '587493038382'
+                    item_price: 199
+                    item_quantity: 2
+                    item_spend: 398
+  responses:
+    '200':
+      content: {}
+      description: Your batch of transactions has been accepted and will be processed
+    '400':
+      content: {}
+      description: >-
+        There are one or more malformed transaction payloads. You must
+        inspect and correct the batch before resubmitting.
+    '403':
+      content: {}
+      description: Sender not recognized. Unable to authenticate or process data.
+    '413':
+      content: {}
+      description: >-
+        Your request is too large and exceeds the maximum payload size of
+        1MB. Split your batch of transactions and try again.
+    '500':
+      content: {}
+      description: Internal server error. Please try resubmitting the batch.
+  security:
+    - api_key: []
+  tags:
+    - Events

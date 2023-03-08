@@ -1,0 +1,3 @@
+type: integer
+format: int64
+description: The amount of rewards a customer has earned from their offer.

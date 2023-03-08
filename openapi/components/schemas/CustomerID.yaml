@@ -1,0 +1,4 @@
+type: string
+title: customer_id
+description: The customer ID you used to target your customer in an audience.
+maxLength: 64

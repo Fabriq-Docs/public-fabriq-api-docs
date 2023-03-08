@@ -1,0 +1,7 @@
+type: integer
+title: spend_condition
+description: >-
+  Represents a spend threshold that must be met or exceeded by the
+  customer in order to complete the step. Other conditions (such as
+  CategoryCondition) may also be present and applied to the
+  SpendCondition.

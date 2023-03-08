@@ -1,0 +1,645 @@
+openapi: 3.1.0
+info:
+  version: 1.0.0
+  title: Fabriq API
+  x-logo:
+    url: https://web-assets.bcg.com/20/56/be8ad508416aa337532210a2527e/fabriq-logo.svg
+  description: |-
+    Fabriq is a marketing personalization platform to accelerate transformations by injecting automation, templatization, and precision targeting into existing marketing tech and processes — ultimately both scaling and hyperpersonalizing campaign execution.
+
+    The Fabriq APIs provide a standardized method for sending data to the platform and integrating hyperpersonalized campaigns with existing technology and properties.
+tags:
+  - name: Events
+    description: Activations, transactions and actions progress customers offers and trigger the issuance of rewards
+    externalDocs:
+      description: 'Coming soon: Our Transactions developer documents are being finalized. Check back soon for updates.'
+      url: https://docs.formation.ai/transactions
+  - name: Status
+    description: Request the offers that a customer currently has active as well as their current progress.
+  - name: Customer Management
+    description: Manage your customer information within the platform
+servers:
+  - url: https://api.fabriq.bcg.com
+    description: Production Server
+paths:
+  /v1/transaction:
+    post:
+      operationId: postTransactions
+      summary: Send Fabriq Transactions
+      description: Send transactions to Fabriq to progress customer offers.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Transactions'
+            examples:
+              transaction:
+                summary: Transaction Example
+                value:
+                  - customer_id: 8b896428-ac34-4911-98af-3d2e6266f60e
+                    transaction_id: b48c8bbc-bcb8-11eb-8529-0242ac130003
+                    transaction_local_datetime: '2021-01-01T00:01:01'
+                    transaction_utc_datetime: '2021-01-01T07:01:01Z'
+                    transaction_total_spend: 12477
+                    line_items:
+                      - item_sku: '94040'
+                        item_price: 99
+                        item_quantity: 0.98
+                        item_spend: 9702
+                      - item_sku: '94467'
+                        item_price: 299
+                        item_quantity: 3.56
+                        item_spend: 800
+                      - item_sku: '587493038382'
+                        item_price: 199
+                        item_quantity: 2
+                        item_spend: 398
+      responses:
+        '200':
+          content: {}
+          description: Your batch of transactions has been accepted and will be processed
+        '400':
+          content: {}
+          description: There are one or more malformed transaction payloads. You must inspect and correct the batch before resubmitting.
+        '403':
+          content: {}
+          description: Sender not recognized. Unable to authenticate or process data.
+        '413':
+          content: {}
+          description: Your request is too large and exceeds the maximum payload size of 1MB. Split your batch of transactions and try again.
+        '500':
+          content: {}
+          description: Internal server error. Please try resubmitting the batch.
+      security:
+        - api_key: []
+      tags:
+        - Events
+  /v1/action:
+    post:
+      operationId: postActions
+      summary: Send Fabriq non-transaction events
+      description: Send Fabriq actions to progress multi-action offer steps that are not purchases
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Actions'
+            examples:
+              single_action:
+                summary: Sending only one action
+                value:
+                  - customer_id: 128b896428-ac34-4911-98af-3d2e6266f60e34567
+                    action_local_datetime: '2021-01-01T00:01:01'
+                    action_utc_datetime: '2021-01-01T07:01:01Z'
+                    action_id: Action1
+                    event_id: C1C8A713-666B-427D-9155-0E2C866515A1
+              double_same_actions:
+                summary: Sending 2 of the same action for different users
+                value:
+                  - customer_id: 128b896428-ac34-4911-98af-3d2e6266f60e34567
+                    action_local_datetime: '2021-01-01T00:01:01'
+                    action_utc_datetime: '2021-01-01T07:01:01Z'
+                    action_id: Action1
+                    event_id: BAF2C86D-624C-46AC-B829-DDEF91F396B2
+                  - customer_id: FF7A8EF5-5E0B-4D18-88BA-0DEC1862219
+                    action_local_datetime: '2021-01-01T00:01:01'
+                    action_utc_datetime: '2021-01-01T07:01:01Z'
+                    action_id: Action1
+                    event_id: 6F9BCA4F-1B46-4C4C-A7FD-F2D31A22C0D9
+              double_different_actions:
+                summary: Sending 2 actions for the same user
+                value:
+                  - customer_id: 128b896428-ac34-4911-98af-3d2e6266f60e34567
+                    action_local_datetime: '2021-01-01T00:01:01'
+                    action_utc_datetime: '2021-01-01T07:01:01Z'
+                    action_id: Action1
+                    event_id: CE07FE18-5CD4-4DFA-9F0B-CFBD33B9948F
+                  - customer_id: 128b896428-ac34-4911-98af-3d2e6266f60e34567
+                    action_local_datetime: '2021-01-01T00:01:01'
+                    action_utc_datetime: '2021-01-01T07:01:01Z'
+                    action_id: Action2
+                    event_id: 0A6CC5B8-FEBD-4AC5-9679-04B6724613D7
+      responses:
+        '200':
+          content: {}
+          description: Your batch of actions has been accepted and will be processed
+        '400':
+          content: {}
+          description: There are one or more malformed action payloads. You must inspect and correct the batch before resubmitting.
+        '403':
+          content: {}
+          description: Sender not recognized. Unable to authenticate or process data.
+        '413':
+          content: {}
+          description: Your request is too large and exceeds the maximum payload size of 1MB. Split your batch of actions and try again.
+        '500':
+          content: {}
+          description: Internal server error. Please try resubmitting the batch.
+      security:
+        - api_key: []
+      tags:
+        - Events
+  /v1/activation:
+    post:
+      operationId: postActivation
+      summary: Offer activation endpoint
+      description: Updates offer state to active based on customer action. Typically triggered as the result of user opting in to an offer through the channel they received the offer.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Activation'
+            examples:
+              activation:
+                summary: Activation Example
+                value:
+                  customer_id: 128b896428-ac34-4911-98af-3d2e6266f60e34567
+                  activation_local_datetime: '2021-01-01T00:01:01'
+                  activation_utc_datetime: '2021-01-01T07:01:01Z'
+                  offer_id: 229f7d6d-21ed-4b09-836f-b8c032cac523
+      responses:
+        '200':
+          content: {}
+          description: The customer's offer will be successfully activated
+        '400':
+          content: {}
+          description: Your payload has one or more errors present. Please fix and resubmit.
+        '403':
+          content: {}
+          description: Sender not recognized. Unable to authenticate or process data.
+        '500':
+          content: {}
+          description: Internal server error. Please try resubmitting requests.
+      security:
+        - api_key: []
+      tags:
+        - Events
+  /customers/forget:
+    post:
+      operationId: forgetCustomers
+      summary: Forget a customer's history and current marketing offers
+      description: Disassociates a customer from their purchase history in the platform as well as from any active offers
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ForgetCustomer'
+            examples:
+              forgetSingle:
+                summary: Forget a Single Customer
+                value:
+                  - 128b896428-ac34-4911-98af-3d2e6266f60e34567
+              forgetMany:
+                summary: Forget multiple customers
+                value:
+                  - 128b896428-ac34-4911-98af-3d2e6266f60e34567
+                  - 7387AFCD-CCCD-478D-93B8-05808039AF72
+                  - 13AF4ABA-B013-450E-BE1C-E5AB2DA32234
+                  - EBD6BBCE-E786-4EE6-A0B5-00A8E2882E2A
+      responses:
+        '200':
+          content: {}
+          description: The customer(s) have been forgotten
+        '400':
+          content: {}
+          description: Your payload has one or more errors present. Please fix and retry.
+        '403':
+          content: {}
+          description: Sender not recognized. Unable to authenticate or process data.
+        '500':
+          content: {}
+          description: Internal server error. Please try resubmitting your request.
+      security:
+        - api_key: []
+      tags:
+        - Customer Management
+  /status/{CustomerID}:
+    get:
+      operationId: getCustomerStatuses
+      summary: Retrieve the list of active offers for a customer
+      description: Returns a list of offers that are currently active for a CustomerID
+      parameters:
+        - name: CustomerID
+          in: path
+          description: ID of the customer that you want to retrieve status for
+          required: true
+          schema:
+            $ref: '#/components/schemas/CustomerID'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Offers'
+          description: The customer was found and any active offers are returned
+        '400':
+          content: {}
+          description: Your request could not be completed as made
+        '403':
+          content: {}
+          description: Sender not recognized.
+        '404':
+          content: {}
+          description: customer_id was not found
+        '500':
+          content: {}
+          description: Internal server error. Please try again later.
+      security:
+        - api_key: []
+      tags:
+        - Status
+components:
+  securitySchemes:
+    api_key:
+      in: header
+      name: x-api-key
+      type: apiKey
+  schemas:
+    CustomerID:
+      type: string
+      title: customer_id
+      description: The customer ID you used to target your customer in an audience.
+      maxLength: 64
+    LocalDateTime:
+      title: Local Date Time
+      type: string
+      format: local-date-time
+      pattern: ^\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d:[0-5]\d
+      description: Customer's local date and time for transaction event. Use the format YYYY-MM-DDT00:00. For example, an event that happens on January 12, 2025 at 7 a.m. local time would be formatted as 2025-01-12T07:00.
+    LineItem:
+      title: LineItem
+      type: object
+      properties:
+        item_sku:
+          type: string
+          description: The product's unique identifier that is also in your Fabriq product catalog
+          maxLength: 32
+        item_price:
+          type: integer
+          format: int64
+          description: The product's unit price in your smallest currency unit (e.g. cents)
+        item_quantity:
+          type: number
+          format: float
+          description: Amount of this item purchased in the transaction (e.g. units, pounds)
+          minimum: 0
+        item_spend:
+          type: integer
+          format: int64
+          description: The item's qualified spend in your smallest currency unit (e.g. cents). Any non-rewardable tender such as coupons should not be included in this value if you do not want to progress an offer with it.
+          minimum: 0
+      required:
+        - item_sku
+        - item_price
+        - item_quantity
+        - item_spend
+    Attributes:
+      title: Empty Schema
+      description: A dictionary of string:string pairs. Fabriq does not inspect, modify, or make decisions based on attribute fields. This field can be useful for carrying details through the outputs of the Fabriq platform.
+      type: object
+      additionalProperties:
+        type: string
+    Transaction:
+      title: Transaction
+      type: object
+      description: Provides individual transaction data details. If your point-of-sale system generates unique transaction IDs, you'll likely want to use those. If not, you will need to generate and maintain them, as this is the primary means for Fabriq to disambiguate between new and already-received transactions.
+      properties:
+        customer_id:
+          $ref: '#/components/schemas/CustomerID'
+        transaction_id:
+          type: string
+          description: Unique transaction event identifier. This is how Fabriq tells events apart. We use transaction IDs to identify duplicates and avoid double awarding progress or rewards.
+          maxLength: 64
+        transaction_local_datetime:
+          $ref: '#/components/schemas/LocalDateTime'
+        transaction_utc_datetime:
+          type: string
+          format: date-time
+          description: UTC date and time for transaction event. Use the format YYYY-MM-DDT00:00Z. For example, an event that happens on January 12, 2025 at 7 a.m. UTC would be formatted as 2025-01-12T07:00Z.
+        transaction_total_spend:
+          type: integer
+          format: int64
+          minimum: 0
+          description: Customer's total transaction spend as cents. Any non-rewardable tender such as coupons should not be included in this value if you do not want to progress an offer with it.
+        line_items:
+          type: array
+          items:
+            $ref: '#/components/schemas/LineItem'
+          minItems: 1
+          maxItems: 500
+        additional_attributes:
+          $ref: '#/components/schemas/Attributes'
+      required:
+        - customer_id
+        - transaction_id
+        - transaction_local_datetime
+        - transaction_utc_datetime
+        - transaction_total_spend
+        - line_items
+    Transactions:
+      title: Transactions
+      type: array
+      description: A set of transaction objects
+      items:
+        $ref: '#/components/schemas/Transaction'
+      minItems: 1
+      maxItems: 100
+    Action:
+      title: Action
+      type: object
+      properties:
+        customer_id:
+          $ref: '#/components/schemas/CustomerID'
+        action_local_datetime:
+          type: string
+          format: local-date-time
+          pattern: ^\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d:[0-5]\d
+          description: Customer's local date and time for the action. Use the format YYYY-MM-DDT00:00. For example, an action that happens on January 12, 2025 at 7 a.m. local time would be formatted as 2025-01-12T07:00.
+        action_utc_datetime:
+          type: string
+          format: date-time
+          description: UTC date and time for the action. Use the format YYYY-MM-DDT00:00Z. For example, an action that happens on January 12, 2025 at 7 a.m. UTC would be formatted as 2025-01-12T07:00Z.
+        action_id:
+          type: string
+          description: A key that uniquely identifies the action a customer took
+          maxLength: 64
+        event_id:
+          type: string
+          description: A key that uniquely identifies this instance of this customer taking this action. This identifier will be used to deduplicate.
+          maxLength: 64
+      required:
+        - customer_id
+        - action_local_datetime
+        - action_utc_datetime
+        - action_id
+    Actions:
+      type: array
+      items:
+        $ref: '#/components/schemas/Action'
+      minItems: 1
+      maxItems: 500
+    Activation:
+      title: OptIn
+      type: object
+      properties:
+        customer_id:
+          $ref: '#/components/schemas/CustomerID'
+        activation_local_datetime:
+          $ref: '#/components/schemas/LocalDateTime'
+        activation_utc_datetime:
+          type: string
+          format: date-time
+          description: UTC date and time for the offer activation event. Use the format YYYY-MM-DDT00:00Z. For example, an event that happens on January 12, 2025 at 7 a.m. UTC would be formatted as 2025-01-12T07:00Z.
+        offer_id:
+          type: string
+          description: The customer's assigned Fabriq offer id, found in Status or Connector payloads.
+      required:
+        - customer_id
+        - activation_local_datetime
+        - activation_utc_datetime
+        - offer_id
+    ForgetCustomer:
+      title: Forget Customers
+      type: array
+      items:
+        $ref: '#/components/schemas/CustomerID'
+    OfferStatus:
+      type: string
+      enum:
+        - eligible
+        - active
+        - completed
+    SingleStepStatus:
+      type: string
+      enum:
+        - eligible
+        - completed
+    ActionCondition:
+      type: string
+      title: action
+      description: The action_id that the customer must complete to successfully complete this step
+    CustomActionStep:
+      type: object
+      description: A step that is completed by a customer performing a non-purchase action sent via the Actions API
+      properties:
+        step_type:
+          type: string
+          enum:
+            - custom_action
+        step_status:
+          $ref: '#/components/schemas/SingleStepStatus'
+        conditions:
+          type: object
+          description: The action requirement(s) to complete the step.
+          properties:
+            action:
+              $ref: '#/components/schemas/ActionCondition'
+    SpendCondition:
+      type: integer
+      title: spend_condition
+      description: Represents a spend threshold that must be met or exceeded by the customer in order to complete the step. Other conditions (such as CategoryCondition) may also be present and applied to the SpendCondition.
+    SinglePurchaseStep:
+      type: object
+      description: A step that is completed by a customer making a transaction that meets the spend requirement.
+      properties:
+        step_type:
+          type: string
+          enum:
+            - single_purchase
+        step_status:
+          $ref: '#/components/schemas/SingleStepStatus'
+        conditions:
+          type: object
+          description: The action requirement(s) to complete the step.
+          properties:
+            spend_requirement:
+              $ref: '#/components/schemas/SpendCondition'
+    CategoryCondition:
+      type: object
+      title: Category
+      description: The category that the customer must purchase in as part of completing this step
+      properties:
+        category_id:
+          type: string
+        category_name:
+          type: string
+    SingleCategoryPurchaseStep:
+      type: object
+      description: A step that is completed by a customer making a transaction that includes a purchase in the assigned category that meets the spend requirement
+      properties:
+        step_type:
+          type: string
+          enum:
+            - single_category_purchase
+        step_status:
+          $ref: '#/components/schemas/SingleStepStatus'
+        conditions:
+          type: object
+          description: The action requirement(s) to complete the step.
+          properties:
+            spend_requirement:
+              $ref: '#/components/schemas/SpendCondition'
+            category:
+              $ref: '#/components/schemas/CategoryCondition'
+    CumulativeStepStatus:
+      type: string
+      enum:
+        - eligible
+        - progressed
+        - completed
+    CurrentSpend:
+      type: integer
+      format: int64
+      description: The amount that a customer has spent towards completing the step. Will not take on a value greater than the spend requirement.
+    TotalRedemptions:
+      type: integer
+      format: int64
+      description: The number of times a customer has completed their offer. Will not take on a value greater than Redemption Limit.
+    TotalReward:
+      type: integer
+      format: int64
+      description: The amount of rewards a customer has earned from their offer.
+    DateCondition:
+      type: string
+      title: complete_by
+      description: Represents a date by which the step must be completed else it becomes impossible to complete, and the offer may be unachievable
+    CumulativePurchaseStep:
+      type: object
+      description: A step that is completed by a customer making a transaction that includes a purchase in the assigned category that meets the spend requirement
+      properties:
+        step_type:
+          type: string
+          enum:
+            - cumulative_purchase
+        status:
+          $ref: '#/components/schemas/CumulativeStepStatus'
+        total_spend:
+          $ref: '#/components/schemas/CurrentSpend'
+        total_redemptions:
+          $ref: '#/components/schemas/TotalRedemptions'
+        total_reward:
+          $ref: '#/components/schemas/TotalReward'
+        conditions:
+          type: object
+          description: The requirements to complete the step. For a purchase to qualify towards the step's Spend Condition it must happen before the complete_by date.
+          properties:
+            spend_requirement:
+              $ref: '#/components/schemas/SpendCondition'
+            complete_by:
+              $ref: '#/components/schemas/DateCondition'
+    Step:
+      type: object
+      title: Offer Step
+      anyOf:
+        - $ref: '#/components/schemas/CustomActionStep'
+        - $ref: '#/components/schemas/SinglePurchaseStep'
+        - $ref: '#/components/schemas/SingleCategoryPurchaseStep'
+        - $ref: '#/components/schemas/CumulativePurchaseStep'
+    Redemptions:
+      type: object
+      properties:
+        type:
+          type: string
+          description: Whether this offer has unlimited or a maximum number of redemptions
+          enum:
+            - limited
+            - unlimited
+        limit:
+          type: integer
+          description: The number of times that this offer can be completed. 0 indicates unlimited completions.
+        total_redemptions:
+          type: integer
+          description: The number of times that this offer has been completed so far.
+        total_reward:
+          type: integer
+          description: The quantity of reward that has been earned thus far
+    Reward:
+      type: object
+      properties:
+        reward_value:
+          type: string
+          description: The amount of the reward_currency that should be given to the customer
+        reward_currency:
+          type: string
+          description: The reward currency that was selected when configuring the offer
+        reward_type:
+          type: string
+          description: The type of rewarding mechanism for this reward
+          enum:
+            - fixed
+        reward_id:
+          description: The identifier for the specific reward in this office
+          type: string
+    SummaryReward:
+      type: object
+      properties:
+        reward_value:
+          type: string
+        reward_currency:
+          type: string
+        reward_type:
+          type: string
+    Tag:
+      type: object
+      properties:
+        tag_name:
+          type: string
+          description: A value entered during the Configure for Launch process or added to the offer by Fabriq to enable use of features such as hosted content.
+    Tags:
+      type: object
+      title: Tags
+      description: A set of Fabriq-generated k-v pairs for hosted content, or those entered in the UI at campaign launch.
+      items:
+        $ref: '#/components/schemas/Tag'
+      example:
+        activation_url: https://companyname.activation.offers.formation.ai/activate/eyJhbGciOiJIUzI1NiJ9.eyJSb2xlIjoiQWRtaW4iLCJJc3N1ZXIiOiJJc3N1ZXIiLCJVc2VybmFtZSI6IkphdmFJblVzZSIsImV4cCI6MTY1NDgyMTE2MCwiaWF0IjoxNjU0ODIxMTYwfQ.OX-99XHxsImVajna8Q0wqa-ybu5dxVXkWryiwR7Las0
+        user_entered_key_1: user_entered_value_1
+        user_entered_key_2: user_entered_value_2
+    Offer:
+      title: Offer
+      type: object
+      properties:
+        customer_id:
+          $ref: '#/components/schemas/CustomerID'
+        offer_type:
+          type: string
+          enum:
+            - single_purchase
+            - single_category_purchase
+            - week_streak
+            - multi_action
+            - cumulative_purchase
+        start_time:
+          $ref: '#/components/schemas/LocalDateTime'
+        end_time:
+          $ref: '#/components/schemas/LocalDateTime'
+        unique_offer_id:
+          type: string
+        status:
+          $ref: '#/components/schemas/OfferStatus'
+        steps:
+          type: object
+          additionalProperties:
+            x-additionalPropertiesName: step_
+            $ref: '#/components/schemas/Step'
+        redemptions:
+          $ref: '#/components/schemas/Redemptions'
+        offer_reward:
+          $ref: '#/components/schemas/Reward'
+          required:
+            - reward_id
+            - reward_value
+            - reward_currency
+            - reward_type
+        total_reward:
+          $ref: '#/components/schemas/SummaryReward'
+        tags:
+          $ref: '#/components/schemas/Tags'
+    Offers:
+      type: array
+      items:
+        $ref: '#/components/schemas/Offer'

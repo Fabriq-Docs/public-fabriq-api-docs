@@ -1,0 +1,8 @@
+type: object
+properties:
+  tag_name:
+    type: string
+    description: >-
+      A value entered during the Configure for Launch process or added to
+      the offer by Fabriq to enable use of features such as hosted
+      content.

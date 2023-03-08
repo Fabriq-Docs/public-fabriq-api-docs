@@ -1,0 +1,50 @@
+title: Transaction
+type: object
+description: >-
+  Provides individual transaction data details. If your point-of-sale
+  system generates unique transaction IDs, you'll likely want to use
+  those. If not, you will need to generate and maintain them, as this is
+  the primary means for Fabriq to disambiguate between new and
+  already-received transactions.
+properties:
+  customer_id:
+    $ref: './CustomerID.yaml'
+  transaction_id:
+    type: string
+    description: >-
+      Unique transaction event identifier. This is how Fabriq tells
+      events apart. We use transaction IDs to identify duplicates and
+      avoid double awarding progress or rewards.
+    maxLength: 64
+  transaction_local_datetime:
+    $ref: './LocalDateTime.yaml'
+  transaction_utc_datetime:
+    type: string
+    format: date-time
+    description: >-
+      UTC date and time for transaction event. Use the format
+      YYYY-MM-DDT00:00Z. For example, an event that happens on January 12,
+      2025 at 7 a.m. UTC would be formatted as 2025-01-12T07:00Z.
+  transaction_total_spend:
+    type: integer
+    format: int64
+    minimum: 0
+    description: >-
+      Customer's total transaction spend as cents. Any non-rewardable
+      tender such as coupons should not be included in this value if you
+      do not want to progress an offer with it.
+  line_items:
+    type: array
+    items:
+      $ref: './LineItem.yaml'
+    minItems: 1
+    maxItems: 500
+  additional_attributes:
+    $ref: './Attributes.yaml'
+required:
+  - customer_id
+  - transaction_id
+  - transaction_local_datetime
+  - transaction_utc_datetime
+  - transaction_total_spend
+  - line_items

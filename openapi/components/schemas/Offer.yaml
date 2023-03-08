@@ -1,0 +1,39 @@
+title: Offer
+type: object
+properties:
+  customer_id:
+    $ref: './CustomerID.yaml'
+  offer_type:
+    type: string
+    enum:
+      - single_purchase
+      - single_category_purchase
+      - week_streak
+      - multi_action
+      - cumulative_purchase
+  start_time:
+    $ref: './LocalDateTime.yaml'
+  end_time:
+    $ref: './LocalDateTime.yaml'
+  unique_offer_id:
+    type: string
+  status:
+    $ref: './OfferStatus.yaml'
+  steps:
+    type: object
+    additionalProperties:
+      x-additionalPropertiesName: step_
+      $ref: './Step.yaml'
+  redemptions:
+    $ref: './Redemptions.yaml'
+  offer_reward:
+    $ref: './Reward.yaml'
+    required:
+      - reward_id
+      - reward_value
+      - reward_currency
+      - reward_type
+  total_reward:
+    $ref: './SummaryReward.yaml'
+  tags:
+    $ref: './Tags.yaml'

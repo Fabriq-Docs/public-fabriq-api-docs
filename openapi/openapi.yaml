@@ -1,55 +1,44 @@
 openapi: 3.1.0
 info:
   version: 1.0.0
-  title: Example.com
-  termsOfService: 'https://example.com/terms/'
-  contact:
-    email: contact@example.com
-    url: 'http://example.com/contact'
-  license:
-    name: Apache 2.0
-    url: 'http://www.apache.org/licenses/LICENSE-2.0.html'
+  title: Fabriq API
   x-logo:
-    url: 'https://redocly.github.io/openapi-template/logo.png'
+    url: 'https://web-assets.bcg.com/20/56/be8ad508416aa337532210a2527e/fabriq-logo.svg'
   description:
     $ref: ./info-description.md
 tags:
-  - name: Echo
-    description: Example echo operations.
-  - name: User
-    description: Operations about users.
-  - name: Tag
-    description: This is a tag description.
+  - name: Events
+    description: >-
+      Activations, transactions and actions progress customers offers and
+      trigger the issuance of rewards
+    externalDocs:
+      description: >-
+        Coming soon: Our Transactions developer documents are being finalized.
+        Check back soon for updates.
+      url: https://docs.formation.ai/transactions
+  - name: Status
+    description: >-
+      Request the offers that a customer currently has active as well as their
+      current progress.
+  - name: Customer Management
+    description: Manage your customer information within the platform
 servers:
-  - url: 'https://{tenant}/api/v1'
-    variables:
-      tenant:
-        default: www
-        description: Your tenant id
-  - url: 'https://example.com/api/v1'
+  - url: https://api.fabriq.bcg.com
+    description: Production Server
 paths:
-  '/users/{username}':
-    $ref: 'paths/users_{username}.yaml'
-  /echo:
-    $ref: paths/echo.yaml
-  /pathItem:
-    $ref: paths/path-item.yaml
-  /pathItemWithExamples:
-    $ref: paths/path-item-with-examples.yaml
+  /v1/transaction:
+    $ref: './paths/v1_transaction.yaml'
+  /v1/action:
+    $ref: './paths/v1_action.yaml'
+  /v1/activation:
+    $ref: './paths/v1_activation.yaml'
+  /customers/forget:
+    $ref: './paths/customers_forget.yaml'
+  /status/{CustomerID}:
+    $ref: './paths/status_{CustomerID}.yaml'
 components:
   securitySchemes:
-    main_auth:
-      type: oauth2
-      flows:
-        implicit:
-          authorizationUrl: 'http://example.com/api/oauth/dialog'
-          scopes:
-            'read:users': read users info
-            'write:users': modify or remove users
     api_key:
-      type: apiKey
       in: header
-      name: api_key
-    basic_auth:
-      type: http
-      scheme: basic
+      name: x-api-key
+      type: apiKey

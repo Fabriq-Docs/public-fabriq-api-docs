@@ -1,0 +1,31 @@
+type: object
+description: >-
+  A step that is completed by a customer making a transaction that
+  includes a purchase in the assigned category that meets the spend
+  requirement
+properties:
+  step_type:
+    type: string
+    enum:
+      - cumulative_purchase
+  status:
+    $ref: './CumulativeStepStatus.yaml'
+  total_spend:
+    $ref: './CurrentSpend.yaml'
+  total_redemptions:
+    $ref: './TotalRedemptions.yaml'
+  total_reward:
+    $ref: './TotalReward.yaml'
+  conditions:
+    type: object
+    description: >-
+      The requirements to complete the step. For a purchase to qualify
+      towards the step's Spend Condition it must happen before the
+      complete_by date.
+    properties:
+      spend_requirement:
+        $ref: './SpendCondition.yaml'
+      category:
+        $ref: './CategoryCondition.yaml'
+      complete_by:
+        $ref: './DateCondition.yaml'

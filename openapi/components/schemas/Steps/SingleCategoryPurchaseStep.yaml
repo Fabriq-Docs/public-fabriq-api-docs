@@ -1,0 +1,20 @@
+type: object
+description: >-
+  A step that is completed by a customer making a transaction that
+  includes a purchase in the assigned category that meets the spend
+  requirement
+properties:
+  step_type:
+    type: string
+    enum:
+      - single_category_purchase
+  step_status:
+    $ref: './SingleStepStatus.yaml'
+  conditions:
+    type: object
+    description: The action requirement(s) to complete the step.
+    properties:
+      spend_requirement:
+        $ref: './SpendCondition.yaml'
+      category:
+        $ref: './CategoryCondition.yaml'

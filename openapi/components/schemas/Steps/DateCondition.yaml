@@ -1,0 +1,5 @@
+type: string
+title: complete_by
+description: >-
+  Represents a date by which the step must be completed else it becomes
+  impossible to complete, and the offer may be unachievable

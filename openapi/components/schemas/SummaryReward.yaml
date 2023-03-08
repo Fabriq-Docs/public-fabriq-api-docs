@@ -1,0 +1,8 @@
+type: object
+properties:
+  reward_value:
+    type: string
+  reward_currency:
+    type: string
+  reward_type:
+    type: string

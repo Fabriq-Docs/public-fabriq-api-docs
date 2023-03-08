@@ -1,0 +1,5 @@
+type: string
+title: action
+description: >-
+  The action_id that the customer must complete to successfully complete
+  this step

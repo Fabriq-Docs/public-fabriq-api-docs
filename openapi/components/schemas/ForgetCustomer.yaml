@@ -1,0 +1,4 @@
+title: Forget Customers
+type: array
+items:
+  $ref: './CustomerID.yaml'

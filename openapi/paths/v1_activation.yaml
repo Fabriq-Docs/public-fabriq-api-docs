@@ -1,0 +1,40 @@
+post:
+  operationId: postActivation
+  summary: Offer activation endpoint
+  description: >-
+    Updates offer state to active based on customer action. Typically
+    triggered as the result of user opting in to an offer through the
+    channel they received the offer.
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: '../components/schemas/Activation.yaml'
+        examples:
+          activation:
+            summary: Activation Example
+            value:
+              customer_id: 128b896428-ac34-4911-98af-3d2e6266f60e34567
+              activation_local_datetime: '2021-01-01T00:01:01'
+              activation_utc_datetime: '2021-01-01T07:01:01Z'
+              offer_id: 229f7d6d-21ed-4b09-836f-b8c032cac523
+  responses:
+    '200':
+      content: {}
+      description: The customer's offer will be successfully activated
+    '400':
+      content: {}
+      description: >-
+        Your payload has one or more errors present. Please fix and
+        resubmit.
+    '403':
+      content: {}
+      description: Sender not recognized. Unable to authenticate or process data.
+    '500':
+      content: {}
+      description: Internal server error. Please try resubmitting requests.
+  security:
+    - api_key: []
+  tags:
+    - Events

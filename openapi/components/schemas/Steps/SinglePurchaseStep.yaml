@@ -1,0 +1,17 @@
+type: object
+description: >-
+  A step that is completed by a customer making a transaction that meets
+  the spend requirement.
+properties:
+  step_type:
+    type: string
+    enum:
+      - single_purchase
+  step_status:
+    $ref: './SingleStepStatus.yaml'
+  conditions:
+    type: object
+    description: The action requirement(s) to complete the step.
+    properties:
+      spend_requirement:
+        $ref: './SpendCondition.yaml'

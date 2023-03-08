@@ -1,0 +1,71 @@
+post:
+  operationId: postActions
+  summary: Send Fabriq non-transaction events
+  description: >-
+    Send Fabriq actions to progress multi-action offer steps that are not
+    purchases
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: '../components/schemas/Actions.yaml'
+        examples:
+          single_action:
+            summary: Sending only one action
+            value:
+              - customer_id: 128b896428-ac34-4911-98af-3d2e6266f60e34567
+                action_local_datetime: '2021-01-01T00:01:01'
+                action_utc_datetime: '2021-01-01T07:01:01Z'
+                action_id: Action1
+                event_id: C1C8A713-666B-427D-9155-0E2C866515A1
+          double_same_actions:
+            summary: Sending 2 of the same action for different users
+            value:
+              - customer_id: 128b896428-ac34-4911-98af-3d2e6266f60e34567
+                action_local_datetime: '2021-01-01T00:01:01'
+                action_utc_datetime: '2021-01-01T07:01:01Z'
+                action_id: Action1
+                event_id: BAF2C86D-624C-46AC-B829-DDEF91F396B2
+              - customer_id: FF7A8EF5-5E0B-4D18-88BA-0DEC1862219
+                action_local_datetime: '2021-01-01T00:01:01'
+                action_utc_datetime: '2021-01-01T07:01:01Z'
+                action_id: Action1
+                event_id: 6F9BCA4F-1B46-4C4C-A7FD-F2D31A22C0D9
+          double_different_actions:
+            summary: Sending 2 actions for the same user
+            value:
+              - customer_id: 128b896428-ac34-4911-98af-3d2e6266f60e34567
+                action_local_datetime: '2021-01-01T00:01:01'
+                action_utc_datetime: '2021-01-01T07:01:01Z'
+                action_id: Action1
+                event_id: CE07FE18-5CD4-4DFA-9F0B-CFBD33B9948F
+              - customer_id: 128b896428-ac34-4911-98af-3d2e6266f60e34567
+                action_local_datetime: '2021-01-01T00:01:01'
+                action_utc_datetime: '2021-01-01T07:01:01Z'
+                action_id: Action2
+                event_id: 0A6CC5B8-FEBD-4AC5-9679-04B6724613D7
+  responses:
+    '200':
+      content: {}
+      description: Your batch of actions has been accepted and will be processed
+    '400':
+      content: {}
+      description: >-
+        There are one or more malformed action payloads. You must inspect
+        and correct the batch before resubmitting.
+    '403':
+      content: {}
+      description: Sender not recognized. Unable to authenticate or process data.
+    '413':
+      content: {}
+      description: >-
+        Your request is too large and exceeds the maximum payload size of
+        1MB. Split your batch of actions and try again.
+    '500':
+      content: {}
+      description: Internal server error. Please try resubmitting the batch.
+  security:
+    - api_key: []
+  tags:
+    - Events

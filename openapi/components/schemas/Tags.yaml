@@ -1,0 +1,12 @@
+type: object
+title: Tags
+description: >-
+  A set of Fabriq-generated k-v pairs for hosted content, or those
+  entered in the UI at campaign launch.
+items:
+  $ref: './Tag.yaml'
+example:
+  activation_url: >-
+    https://companyname.activation.offers.formation.ai/activate/eyJhbGciOiJIUzI1NiJ9.eyJSb2xlIjoiQWRtaW4iLCJJc3N1ZXIiOiJJc3N1ZXIiLCJVc2VybmFtZSI6IkphdmFJblVzZSIsImV4cCI6MTY1NDgyMTE2MCwiaWF0IjoxNjU0ODIxMTYwfQ.OX-99XHxsImVajna8Q0wqa-ybu5dxVXkWryiwR7Las0
+  user_entered_key_1: user_entered_value_1
+  user_entered_key_2: user_entered_value_2

@@ -1,0 +1,41 @@
+post:
+  operationId: forgetCustomers
+  summary: Forget a customer's history and current marketing offers
+  description: >-
+    Disassociates a customer from their purchase history in the platform as
+    well as from any active offers
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: ../components/schemas/ForgetCustomer.yaml
+        examples:
+          forgetSingle:
+            summary: Forget a Single Customer
+            value:
+              - 128b896428-ac34-4911-98af-3d2e6266f60e34567
+          forgetMany:
+            summary: Forget multiple customers
+            value:
+              - 128b896428-ac34-4911-98af-3d2e6266f60e34567
+              - 7387AFCD-CCCD-478D-93B8-05808039AF72
+              - 13AF4ABA-B013-450E-BE1C-E5AB2DA32234
+              - EBD6BBCE-E786-4EE6-A0B5-00A8E2882E2A
+  responses:
+    '200':
+      content: {}
+      description: The customer(s) have been forgotten
+    '400':
+      content: {}
+      description: Your payload has one or more errors present. Please fix and retry.
+    '403':
+      content: {}
+      description: Sender not recognized. Unable to authenticate or process data.
+    '500':
+      content: {}
+      description: Internal server error. Please try resubmitting your request.
+  security:
+    - api_key: []
+  tags:
+    - Customer Management

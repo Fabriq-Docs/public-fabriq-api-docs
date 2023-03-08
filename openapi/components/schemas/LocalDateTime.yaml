@@ -1,0 +1,8 @@
+title: Local Date Time
+type: string
+format: local-date-time
+pattern: ^\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d:[0-5]\d
+description: >-
+  Customer's local date and time for transaction event. Use the format
+  YYYY-MM-DDT00:00. For example, an event that happens on January 12, 2025
+  at 7 a.m. local time would be formatted as 2025-01-12T07:00.

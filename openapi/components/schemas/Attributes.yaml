@@ -1,0 +1,8 @@
+title: Empty Schema
+description: >-
+  A dictionary of string:string pairs. Fabriq does not inspect, modify,
+  or make decisions based on attribute fields. This field can be useful
+  for carrying details through the outputs of the Fabriq platform.
+type: object
+additionalProperties:
+  type: string

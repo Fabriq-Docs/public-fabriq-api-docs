@@ -1,0 +1,24 @@
+title: OptIn
+type: object
+properties:
+  customer_id:
+    $ref: './CustomerID.yaml'
+  activation_local_datetime:
+    $ref: './LocalDateTime.yaml'
+  activation_utc_datetime:
+    type: string
+    format: date-time
+    description: >-
+      UTC date and time for the offer activation event. Use the format
+      YYYY-MM-DDT00:00Z. For example, an event that happens on January 12,
+      2025 at 7 a.m. UTC would be formatted as 2025-01-12T07:00Z.
+  offer_id:
+    type: string
+    description: >-
+      The customer's assigned Fabriq offer id, found in Status or
+      Connector payloads.
+required:
+  - customer_id
+  - activation_local_datetime
+  - activation_utc_datetime
+  - offer_id

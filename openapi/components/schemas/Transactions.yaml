@@ -1,0 +1,7 @@
+title: Transactions
+type: array
+description: A set of transaction objects
+items:
+  $ref: './Transaction.yaml'
+minItems: 1
+maxItems: 100

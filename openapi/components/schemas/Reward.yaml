@@ -1,0 +1,18 @@
+type: object
+properties:
+  reward_value:
+    type: string
+    description: >-
+      The amount of the reward_currency that should be given to the
+      customer
+  reward_currency:
+    type: string
+    description: The reward currency that was selected when configuring the offer
+  reward_type:
+    type: string
+    description: The type of rewarding mechanism for this reward
+    enum:
+      - fixed
+  reward_id:
+    description: The identifier for the specific reward in this office
+    type: string

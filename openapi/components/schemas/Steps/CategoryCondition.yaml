@@ -1,0 +1,10 @@
+type: object
+title: Category
+description: >-
+  The category that the customer must purchase in as part of completing
+  this step
+properties:
+  category_id:
+    type: string
+  category_name:
+    type: string

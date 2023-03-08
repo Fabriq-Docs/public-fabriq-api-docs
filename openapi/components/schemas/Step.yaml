@@ -1,0 +1,7 @@
+type: object
+title: Offer Step
+anyOf:
+  - $ref: './steps/CustomActionStep.yaml'
+  - $ref: './steps/SinglePurchaseStep.yaml'
+  - $ref: './steps/SingleCategoryPurchaseStep.yaml'
+  - $ref: './steps/CumulativePurchaseStep.yaml'

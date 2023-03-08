@@ -1,0 +1,35 @@
+title: Action
+type: object
+properties:
+  customer_id:
+    $ref: './CustomerID.yaml'
+  action_local_datetime:
+    type: string
+    format: local-date-time
+    pattern: ^\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d:[0-5]\d
+    description: >-
+      Customer's local date and time for the action. Use the format
+      YYYY-MM-DDT00:00. For example, an action that happens on January 12,
+      2025 at 7 a.m. local time would be formatted as 2025-01-12T07:00.
+  action_utc_datetime:
+    type: string
+    format: date-time
+    description: >-
+      UTC date and time for the action. Use the format YYYY-MM-DDT00:00Z.
+      For example, an action that happens on January 12, 2025 at 7 a.m.
+      UTC would be formatted as 2025-01-12T07:00Z.
+  action_id:
+    type: string
+    description: A key that uniquely identifies the action a customer took
+    maxLength: 64
+  event_id:
+    type: string
+    description: >-
+      A key that uniquely identifies this instance of this customer taking
+      this action. This identifier will be used to deduplicate.
+    maxLength: 64
+required:
+  - customer_id
+  - action_local_datetime
+  - action_utc_datetime
+  - action_id

@@ -1,0 +1,19 @@
+type: object
+properties:
+  type:
+    type: string
+    description: Whether this offer has unlimited or a maximum number of redemptions
+    enum:
+      - limited
+      - unlimited
+  limit:
+    type: integer
+    description: >-
+      The number of times that this offer can be completed. 0 indicates
+      unlimited completions.
+  total_redemptions:
+    type: integer
+    description: The number of times that this offer has been completed so far.
+  total_reward:
+    type: integer
+    description: The quantity of reward that has been earned thus far
