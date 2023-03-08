@@ -2,6 +2,8 @@
 
 ## How to use this repository
 
+Editing this repository will update the official API documentation of the Fabriq platform that is used by case teams & client pitches. Make your edits, create a PR, and distribution assets will be automatically validated and created for you. We recommend you run `npm test` locally to be sure before pushing.
+
 ## Working on your OpenAPI Definition
 
 ### Install
