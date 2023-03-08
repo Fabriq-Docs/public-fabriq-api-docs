@@ -220,7 +220,7 @@ paths:
   /status/{CustomerID}:
     get:
       operationId: getCustomerStatuses
-      summary: Retrieve the list of active offers for a customer
+      summary: Retrieve the list of active offers for a customers
       description: Returns a list of offers that are currently active for a CustomerID
       parameters:
         - name: CustomerID
